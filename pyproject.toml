@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "open-auth-client-api"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "open_auth_client_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.89.0"
+uvicorn = {extras = ["standard"], version = "^0.20.0"}
+sqlalchemy = "^1.4.46"
+
+
+[tool.poetry.group.dev.dependencies]
+black = {version = "^23.1a1", allow-prereleases = true}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
