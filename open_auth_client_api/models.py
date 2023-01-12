@@ -12,6 +12,6 @@ class User(Base):
     age = Column(Integer)
 
     # max phoneno. length is 16 by international standards
-    phone = Column(String, nullable=False)
+    phone = Column(String(16), nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
