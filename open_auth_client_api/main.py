@@ -31,3 +31,9 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(404, "User does not exist")
     else:
         return user
+
+
+@app.post(path="/users", response_model=schemas.User, status_code=201)
+def create_user(UserData: schemas.UserCreate, db: Session = Depends(get_db)):
+    found_user = crud.create_user(db=db, User=UserData)
+    return found_user
