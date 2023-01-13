@@ -7,9 +7,11 @@ class UserBase(BaseModel):
     age: int
     phone: str
 
+
 class UserCreate(UserBase):
     password: str
     is_active: bool = True
+
 
 class User(UserBase):
     id: int
