@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 
+from utils.password import hash_password
+
 from . import models, schemas
 
 
@@ -13,7 +15,7 @@ def create_user(db: Session, User: schemas.UserCreate):
         last_name=User.last_name,
         age=User.age,
         phone=User.phone,
-        hashed_password=User.password,
+        hashed_password=hash_password(user_password=User.password),
         is_active=User.is_active,
     )
 
