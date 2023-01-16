@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class UserBase(BaseModel):
@@ -6,6 +6,12 @@ class UserBase(BaseModel):
     last_name: str
     age: int
     phone: str
+
+    @validator("age")
+    def age_is_13(cls, v):
+        if v < 13:
+            raise ValueError("age must be 13 or greater")
+        return v
 
 
 class UserCreate(UserBase):
