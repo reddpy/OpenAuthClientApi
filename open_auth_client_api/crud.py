@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from utils.password import hash_password
@@ -10,6 +11,13 @@ def get_user(db: Session, user_id: int):
 
 
 def create_user(db: Session, User: schemas.UserCreate):
+    existing_ph_user = (
+        db.query(models.User).filter(models.User.phone == User.phone).first()
+    )
+
+    if existing_ph_user:
+        raise HTTPException(status_code=422, detail="User with phone already exists")
+
     new_user = models.User(
         first_name=User.first_name,
         last_name=User.last_name,
