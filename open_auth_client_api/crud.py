@@ -6,19 +6,23 @@ from utils.password import hash_password
 from . import models, schemas
 
 
-def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+def get_user(db: Session, user_id: int) -> models.User:
+    retreived_user: models.User = (
+        db.query(models.User).filter(models.User.id == user_id).first()
+    )
+
+    return retreived_user
 
 
-def create_user(db: Session, User: schemas.UserCreate):
-    existing_ph_user = (
+def create_user(db: Session, User: schemas.UserCreate) -> models.User:
+    existing_ph_user: models.User = (
         db.query(models.User).filter(models.User.phone == User.phone).first()
     )
 
     if existing_ph_user:
         raise HTTPException(status_code=422, detail="User with phone already exists")
 
-    new_user = models.User(
+    new_user: models.User = models.User(
         first_name=User.first_name,
         last_name=User.last_name,
         age=User.age,
