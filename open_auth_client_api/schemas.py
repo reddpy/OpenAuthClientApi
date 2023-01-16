@@ -1,4 +1,5 @@
 import re
+from typing import Union
 
 from pydantic import BaseModel, validator
 
@@ -21,7 +22,6 @@ class UserBase(BaseModel):
 
     @validator("phone")
     def valid_number_regex(cls, v):
-        print(v)
         regex_expression = "^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$"
 
         match_obj = re.match(regex_expression, v)
@@ -35,7 +35,6 @@ class UserBase(BaseModel):
         wanted_chars = list("1234567890")
 
         valid_chars = [i for i in v if i in wanted_chars]
-        print(valid_chars)
 
         max_length = 16
         if len(v) > max_length:
@@ -47,6 +46,36 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     is_active: bool = True
+
+    @validator("password")
+    def pass_validate_length(cls, v):
+        pass_len: int = 10
+
+        if len(v) < pass_len:
+            error_msg = "Password must be length of %d or greater" % pass_len
+            raise ValueError(error_msg)
+
+        return v
+
+    @validator("password")
+    def pass_validate_upper(cls, v):
+        has_upper: Union[bool, None] = [
+            bool(letter) for letter in v if letter[0].istitle()
+        ]
+
+        if len(has_upper) < 1:
+            raise ValueError("Password must contain at least one uppercase character")
+
+        return v
+
+    @validator("password")
+    def pass_special_chars(cls, v):
+        special_chars: re = re.search("[@_!#$%^&*()<>?/\|}{~:;]", v)
+
+        if not special_chars:
+            raise ValueError("Password must contain at least one special character")
+
+        return v
 
 
 class User(UserBase):
