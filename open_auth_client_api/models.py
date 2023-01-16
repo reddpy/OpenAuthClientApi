@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, JSON
 
 from .database import Base
 
@@ -12,6 +12,6 @@ class User(Base):
     age = Column(Integer)
 
     # max phoneno. length is 16 by international standards
-    phone = Column(String(16), nullable=False)
+    phone = Column(JSON, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
