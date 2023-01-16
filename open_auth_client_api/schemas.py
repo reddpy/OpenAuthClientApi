@@ -1,3 +1,5 @@
+import re
+
 from pydantic import BaseModel, validator
 
 
@@ -11,6 +13,16 @@ class UserBase(BaseModel):
     def age_is_13(cls, v):
         if v < 13:
             raise ValueError("age must be 13 or greater")
+        return v
+
+    @validator("phone")
+    def valid_number_regex(cls, v):
+        regex_expression = "^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$"
+
+        match_obj = re.match(regex_expression, v)
+        if not match_obj:
+            raise ValueError("phone is not valid")
+
         return v
 
 
