@@ -1,14 +1,19 @@
 import re
-from typing import Union
+from typing import Dict, TypedDict
 
 from pydantic import BaseModel, validator
+
+
+class PhoneNumberJSON(TypedDict):
+    country_code: str
+    phone_number: str
 
 
 class UserBase(BaseModel):
     first_name: str
     last_name: str
     age: int
-    phone: str
+    phone: PhoneNumberJSON
 
     @validator("age")
     def age_is_13(cls, v):
@@ -17,18 +22,20 @@ class UserBase(BaseModel):
         if v < min_age:
             error_msg = "age must be %d or greater" % min_age
             raise ValueError(error_msg)
-            
+
         return v
 
     @validator("phone")
     def strip_spaces(cls, v):
-        return v.strip().replace(" ", "")
+        v["country_code"] = v["country_code"].strip()
+        v["phone_number"] = v["phone_number"].strip()
+        return v
 
     @validator("phone")
     def valid_number_regex(cls, v):
         regex_expression: str = "^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$"
 
-        match_obj: re = re.match(regex_expression, v)
+        match_obj: re = re.match(regex_expression, v["phone_number"])
         if not match_obj:
             raise ValueError("phone is not valid")
 
@@ -37,13 +44,13 @@ class UserBase(BaseModel):
     @validator("phone")
     def ph_max_length(cls, v):
         wanted_chars: list[str] = list("1234567890")
-        valid_chars: list[str] = [i for i in v if i in wanted_chars]
+        valid_chars: list[str] = [i for i in v["phone_number"] if i in wanted_chars]
         max_length: int = 16
 
         if len(v) > max_length:
             raise ValueError("phone is not valid length")
-
-        return "".join(valid_chars)
+        v["phone_number"] = "".join(valid_chars)
+        return v
 
 
 class UserCreate(UserBase):
