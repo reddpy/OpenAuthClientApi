@@ -1,5 +1,5 @@
 import re
-from typing import Dict, TypedDict
+from typing import TypedDict
 
 from pydantic import BaseModel, validator
 

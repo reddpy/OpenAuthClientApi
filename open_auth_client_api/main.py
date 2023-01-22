@@ -2,9 +2,11 @@ from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
-from .database import SessionLocal, engine
+from .database import SessionLocal
 
-models.Base.metadata.create_all(bind=engine)
+#! line below creates all the models on api startup.
+# we don't want that to happen due to alembic usage.
+# models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
